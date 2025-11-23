@@ -1,15 +1,13 @@
 import Ship from '../ship/ship.js'
 export default class Gameboard {
-    constructor(x = 10, y = 10) {
-        this.board = new Array(y)
-        for (let i = 0; i < y; i++) {
-            this.board[i] = new Array(x)
-            for (let j = 0; j < x; j++) {
-                this.board[i][j] = 0
+    constructor() {
+        this.board = new Array(10)
+        for (let y = 0; y < 10; y++) {
+            this.board[y] = new Array(10)
+            for (let x = 0; x < 10; x++) {
+                this.board[y][x] = 0
             }
         }
-        this.length = x
-        this.height = y
         this.ships = new Array()
         this.missed = new Array()
     }
@@ -17,12 +15,12 @@ export default class Gameboard {
     placeShip(length, x, y, vertical = false) {
         this.ships.push(new Ship(length))
         if (vertical) {
-            if (y + length > this.height) y = this.height - length
+            if (y + length > 10) y = 10 - length
             for (let i = 0; i < length; i++) {
                 this.board[y + i][x] = this.ships.at(-1)
             }
         } else {
-            if (x + length > this.length) x = this.length - length
+            if (x + length > 10) x = 10 - length
             for (let i = 0; i < length; i++) {
                 this.board[y][x + i] = this.ships.at(-1)
             }
@@ -30,8 +28,14 @@ export default class Gameboard {
     }
 
     receiveAttack(x, y) {
-        if (this.board[y][x] instanceof Ship) this.board[y][x].hit()
-        else this.missed.push([x, y])
+        if (this.board[y][x] instanceof Ship) {
+            this.board[y][x].hit()
+            return true
+        }
+        else {
+            this.missed.push([x, y])
+            return false
+        }
     }
 
     allSunk() {
