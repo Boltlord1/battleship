@@ -25,11 +25,11 @@ const Form = function(place, attach, check) {
 
     human.type = 'radio'
     human.name = 'type'
-    human.value = 0
+    human.value = 1
     human.id = 'Human' + attach
     comp.type = 'radio'
     comp.name = 'type'
-    comp.value = 1
+    comp.value = 0
     comp.id = 'comp' + attach
     form.appendChild(human)
     form.appendChild(comp)

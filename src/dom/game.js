@@ -6,8 +6,17 @@ function Board(player, clss) {
     let turn = false
     let enemy
     const changeMode = () => play = play ? false : true
-    const switchTurn = () => turn = turn ? false : true
     const setEnemy = (obj) => enemy = obj
+    const switchTurn = () => {
+        turn = turn ? false : true
+        if (player.type === 'Human' && enemy.player.type === 'Computer') {
+            while(turn) {
+                const x = Math.floor(Math.random() * 8)
+                const y = Math.floor(Math.random() * 8)
+                attackCell(x, y)
+            }
+        }
+    }
 
     let selected
     const ships = document.createElement('div')
@@ -110,6 +119,17 @@ function Board(player, clss) {
         over.classList.add('over')
         over.textContent = `Game over! ${enemy.player.name} beat ${player.name}`
         main.appendChild(over)
+    }
+
+    if (player.type === 'Computer') {
+        ship.forEach((shi) => {
+            selected = shi
+            while(!shi.placed) {
+                const x = Math.floor(Math.random() * 8)
+                const y = Math.floor(Math.random() * 8)
+                placeShip(x, y)
+            }
+        })
     }
 
     return { side, player, changeMode, getShips, switchTurn, setEnemy }
