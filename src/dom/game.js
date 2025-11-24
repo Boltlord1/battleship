@@ -1,10 +1,15 @@
-function Board(player) {
-    let mode = 0
-    const changeMode = () => mode = mode === 0 ? 1 : 0
+function Board(player, clss) {
     const side = document.createElement('div')
     side.classList.add('side')
-    let selected
+    side.classList.add(clss)
+    let play = false
+    let turn = false
+    let enemy
+    const changeMode = () => play = play ? false : true
+    const switchTurn = () => turn = turn ? false : true
+    const setEnemy = (obj) => enemy = obj
 
+    let selected
     const ships = document.createElement('div')
     ships.classList.add('ships')
     const ship = [ {length: 5, name: 'Cruiser'}, {length: 4, name: 'Battleship'}, {length: 3, name: 'Destroyer'},
@@ -30,8 +35,8 @@ function Board(player) {
             grid[y][x].classList.add('cell')
             grid[y][x].id = `x${x}-y${y}`
             grid[y][x].addEventListener('click', () => {
-                if (mode === 1) attackCell(x, y)
-                else placeShip(x, y)
+                if (play && turn) attackCell(x, y)
+                else if (!play) placeShip(x, y)
             })
             board.appendChild(grid[y][x])
         }
@@ -63,7 +68,7 @@ function Board(player) {
             }
         }
         if (selected.placed) {
-            const placed = document.querySelectorAll(`.${selected.name}`)
+            const placed = document.querySelectorAll(`.${clss} .${selected.name}`)
             placed.forEach((item) => {
                 item.classList.remove(selected.name)
                 item.classList.remove('placed')
@@ -86,15 +91,28 @@ function Board(player) {
 
     function attackCell(x, y) {
         if (grid[y][x].classList.contains('shot')) return
+        switchTurn()
+        enemy.switchTurn()
         grid[y][x].classList.add('shot')
         if (player.board.receiveAttack(x, y)) {
             grid[y][x].classList.add('hit')
+            if (player.board.board[y][x].isSunk())
+                if (player.board.allSunk()) endGame()
         } else {
             grid[y][x].classList.add('missed')
         }
     }
 
-    return { side, changeMode, getShips }
+    function endGame() {
+        enemy.switchTurn()
+        const main = document.querySelector('.main')
+        const over = document.createElement('h1')
+        over.classList.add('over')
+        over.textContent = `Game over! ${enemy.player.name} beat ${player.name}`
+        main.appendChild(over)
+    }
+
+    return { side, player, changeMode, getShips, switchTurn, setEnemy }
 }
 
 export default function displayGame(one, two) {
@@ -102,8 +120,10 @@ export default function displayGame(one, two) {
     main.classList.add('game')
     main.classList.remove('info')
     main.replaceChildren()
-    const left = Board(one)
-    const right = Board(two)
+    const left = Board(one, 'left')
+    const right = Board(two, 'right')
+    left.setEnemy(right)
+    right.setEnemy(left)
 
     const title = document.createElement('h1')
     title.textContent = `${one.name} vs. ${two.name}`
@@ -112,20 +132,24 @@ export default function displayGame(one, two) {
     main.appendChild(left.side)
     main.appendChild(right.side)
 
+    let started = false
     const go = document.createElement('button')
     go.classList.add('go')
     go.textContent = 'Go'
     main.appendChild(go)
     go.addEventListener('click', () => {
+        if (started) return
         for (const ship of left.getShips()) {
             if (!ship.placed) return
             one.board.placeShip(ship.length, ship.position[0], ship.position[1], ship.position[2])
         }
-        // for (const ship of right.getShips()) {
-        //     if (!ship.placed) return
-        //     one.board.placeShip(ship.length, ship.position[0], ship.position[1], ship.position[2])
-        // }
+        for (const ship of right.getShips()) {
+            if (!ship.placed) return
+            two.board.placeShip(ship.length, ship.position[0], ship.position[1], ship.position[2])
+        }
         left.changeMode()
         right.changeMode()
+        right.switchTurn()
+        started = true
     })
 }

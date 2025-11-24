@@ -31,7 +31,7 @@ header {
 
 .main.game {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     justify-items: center;
 }
 
@@ -83,7 +83,7 @@ header {
 }
 
 .title {
-    grid-column: 1 / 3;
+    grid-column: 1 / 4;
 }
 
 .ships {
@@ -118,7 +118,15 @@ header {
     border-color: red;
 }
 
-
 .cell.placed {
     background-color: hsl(200 50 80);
+}
+
+.side:nth-of-type(2) {
+    grid-column-start: 3;
+}
+
+.over {
+    grid-row: 2 / 3;
+    grid-column: 2 / 3;
 }
