@@ -11,8 +11,8 @@ function Board(player, clss) {
         turn = turn ? false : true
         if (player.type === 'Human' && enemy.player.type === 'Computer') {
             while(turn) {
-                const x = Math.floor(Math.random() * 8)
-                const y = Math.floor(Math.random() * 8)
+                const x = Math.floor(Math.random() * 10)
+                const y = Math.floor(Math.random() * 10)
                 attackCell(x, y)
             }
         }
@@ -87,11 +87,13 @@ function Board(player, clss) {
             for (let i = 0; i < selected.length; i++) {
                 grid[y + i][x].classList.add(selected.name)
                 grid[y + i][x].classList.add('placed')
+                if (player.type === 'Computer') grid[y + i][x].classList.add('hidden')
             }
         } else {
             for (let i = 0; i < selected.length; i++) {
                 grid[y][x + i].classList.add(selected.name)
                 grid[y][x + i].classList.add('placed')
+                if (player.type === 'Computer') grid[y][x + i].classList.add('hidden')
             }
         }
         selected.placed = true
@@ -125,8 +127,9 @@ function Board(player, clss) {
         ship.forEach((shi) => {
             selected = shi
             while(!shi.placed) {
-                const x = Math.floor(Math.random() * 8)
-                const y = Math.floor(Math.random() * 8)
+                vertical = vertical ? false : true
+                const x = Math.floor(Math.random() * 10)
+                const y = Math.floor(Math.random() * 10)
                 placeShip(x, y)
             }
         })

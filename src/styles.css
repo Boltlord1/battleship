@@ -118,7 +118,7 @@ header {
     border-color: red;
 }
 
-.cell.placed {
+.cell.placed:not(.hidden) {
     background-color: hsl(200 50 80);
 }
 
