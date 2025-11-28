@@ -1,9 +1,9 @@
 import Gameboard from '../gameboard/gameboard.js'
 export default class Player {
     constructor(type = 0, name) {
-        this.name = name
-        if (type === 1) this.type = 'Human'
-        else this.type = 'Computer'
+        this.type = Number(type)
+        if (!name) this.name = this.type ? 'Player' : 'Computer'
+        else this.name = name.trim()
         this.board = new Gameboard()
     }
 }

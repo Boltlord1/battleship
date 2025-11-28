@@ -1,9 +1,9 @@
 import './styles.css'
-import displayForms from './dom/form'
+import displayForm from './dom/form'
 
 const reset = document.querySelector('.reset')
-reset.addEventListener('click', displayForms)
+reset.addEventListener('click', displayForm)
 reset.dispatchEvent(new Event('click'))
 
-const start = document.querySelector('.start')
-start.dispatchEvent(new Event('click'))
+const form = document.querySelector('.form')
+form.dispatchEvent(new Event('submit'))

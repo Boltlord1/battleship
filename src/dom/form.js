@@ -1,87 +1,96 @@
 import Player from '../player/player.js'
 import displayGame from './game.js'
-import swap from './swap.js'
 
-const Form = function(place, attach, check) {
+function Section(computer, right = false) {
+    let attach = right ? '-right' : '-left'
+    const section = document.createElement('section')
+    section.classList.add('section')
+    const lName = document.createElement('label')
+    const iName = document.createElement('input')
+    const iHuman = document.createElement('input')
+    const bHuman = document.createElement('label')
+    const lHuman = document.createElement('label')
+    const iComp = document.createElement('input')
+    const bComp = document.createElement('label')
+    const lComp = document.createElement('label')
+
+    lName.textContent = 'Name'
+    lName.htmlFor = 'name' + attach
+    iName.type = 'text'
+    iName.name = 'name' + attach
+    iName.id = 'name' + attach
+    section.appendChild(lName)
+    section.appendChild(iName)
+
+    iHuman.type = 'radio'
+    iHuman.name = 'type' + attach
+    iHuman.value = 1
+    iHuman.id = 'human' + attach
+    iComp.type = 'radio'
+    iComp.name = 'type' + attach
+    iComp.value = 0
+    iComp.id = 'comp' + attach
+    section.appendChild(iHuman)
+    section.appendChild(iComp)
+
+    bHuman.classList.add('radio')
+    bComp.classList.add('radio')
+    bHuman.htmlFor = 'human' + attach
+    bComp.htmlFor = 'comp' + attach
+    lHuman.textContent = 'Human'
+    lHuman.htmlFor = 'human' + attach
+    lComp.textContent = 'Computer'
+    lComp.htmlFor = 'comp' + attach
+    section.appendChild(bHuman)
+    section.appendChild(lHuman)
+    section.appendChild(bComp)
+    section.appendChild(lComp)
+
+    function swap() {
+        if (!computer) {
+            iName.placeholder = 'Player'
+            bHuman.classList.add('selected')
+            bComp.classList.remove('selected')
+        } else {
+            iName.placeholder = 'Computer'
+            bComp.classList.add('selected')
+            bHuman.classList.remove('selected')
+        }
+        computer = computer ? false : true
+    }
+    swap()
+    iHuman.addEventListener('change', swap)
+    iComp.addEventListener('change', swap)
+    computer ? iHuman.checked = true : iComp.checked = true
+
+    return section
+}
+
+export default function displayForm() {
+    const main = document.querySelector('main')
+    main.classList.remove('game')
+    main.replaceChildren()
     const form = document.createElement('form')
-    const nameLabel = document.createElement('label')
-    const name = document.createElement('input')
-    const human = document.createElement('input')
-    const humanDiv = document.createElement('label')
-    const humanLabel = document.createElement('label')
-    const comp = document.createElement('input')
-    const compDiv = document.createElement('label')
-    const compLabel = document.createElement('label')
     form.classList.add('form')
+    main.appendChild(form)
 
-    nameLabel.textContent = 'Name'
-    nameLabel.htmlFor = 'name' + attach
-    name.type = 'text'
-    name.name = 'name'
-    name.id = 'name' + attach
-    name.placeholder = place
-    form.appendChild(nameLabel)
-    form.appendChild(name)
+    const left = Section(false)
+    const right = Section(true, true)
+    const start = document.createElement('button')
+    start.classList.add('start')
+    start.textContent = 'Start game'
+    start.type = 'submit'
+    form.appendChild(left)
+    form.appendChild(start)
+    form.appendChild(right)
 
-    human.type = 'radio'
-    human.name = 'type'
-    human.value = 1
-    human.id = 'Human' + attach
-    comp.type = 'radio'
-    comp.name = 'type'
-    comp.value = 0
-    comp.id = 'comp' + attach
-    form.appendChild(human)
-    form.appendChild(comp)
-
-    humanDiv.classList.add('radio')
-    compDiv.classList.add('radio')
-    humanDiv.htmlFor = 'Human' + attach
-    compDiv.htmlFor = 'comp' + attach
-    humanLabel.textContent = 'Human'
-    humanLabel.htmlFor = 'Human' + attach
-    compLabel.textContent = 'Computer'
-    compLabel.htmlFor = 'comp' + attach
-    form.appendChild(humanDiv)
-    form.appendChild(humanLabel)
-    form.appendChild(compDiv)
-    form.appendChild(compLabel)
-
-    check ? (human.checked = true, humanDiv.classList.add('checked'))
-    : (comp.checked = true, compDiv.classList.add('checked'))
-    human.addEventListener('change', () => swap('checked', humanDiv, [compDiv]))
-    comp.addEventListener('change', () => swap('checked', compDiv, [humanDiv]))
-
-    let playerObj
-    const player = () => playerObj
     form.addEventListener('submit', (event) => {
         event.preventDefault()
         const formData = new FormData(form)
-        const name = formData.get('name') ? formData.get('name') : place
-        const type = Number(formData.get('type'))
-        playerObj = new Player(type, name)
-    })
-
-    return { form, player }
-}
-
-export default function displayForms() {
-    const main = document.querySelector('.main')
-    main.classList.add('info')
-    main.classList.remove('game')
-    main.replaceChildren()
-    const left = Form('Player', '-a', true)
-    const right = Form('Computer', '-b', false)
-    main.appendChild(left.form)
-    main.appendChild(right.form)
-
-    const start = document.createElement('button')
-    start.textContent = 'Start game'
-    start.classList.add('start')
-    main.appendChild(start)
-    start.addEventListener('click', () => {
-        left.form.dispatchEvent(new Event('submit'))
-        right.form.dispatchEvent(new Event('submit'))
-        displayGame(left.player(), right.player())
+        const leftName = formData.get('name-left')
+        const leftType = formData.get('type-left')
+        const rightName = formData.get('name-right')
+        const rightType = formData.get('type-right')
+        displayGame(new Player(leftType, leftName), new Player(rightType, rightName))
     })
 }
