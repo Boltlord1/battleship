@@ -24,7 +24,9 @@ export default function Gameboard() {
         const cell = board[y][x]
         if (cell !== null) {
             cell.hit()
+            return true
         }
+        return false
     }
 
     const sunkAt = (coordinates) => {

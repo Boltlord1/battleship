@@ -1,21 +1,23 @@
 import getPositions from './positions.js'
 
-test('Placement of 2 on (5, 5) returns [5, 5], [5, 6]', () => {
-    const positions = getPositions([5, 5], 2)
-    expect(positions[0][0]).toBe(5)
-    expect(positions[0][1]).toBe(5)
-    expect(positions[1][0]).toBe(6)
-    expect(positions[1][1]).toBe(5)
-})
-
-test('Vertical placement of 3 on (5, 5) returns [5, 5], [5, 6], [5, 7]', () => {
-    const positions = getPositions([5, 5], 3, true)
-    expect(positions[0][0]).toBe(5)
+test('Placement of 3 on (5, 5) returns [4, 5], [5, 5], [6, 5]', () => {
+    const positions = getPositions([5, 5], 3)
+    expect(positions[0][0]).toBe(4)
     expect(positions[0][1]).toBe(5)
     expect(positions[1][0]).toBe(5)
-    expect(positions[1][1]).toBe(6)
+    expect(positions[1][1]).toBe(5)
+    expect(positions[2][0]).toBe(6)
+    expect(positions[2][1]).toBe(5)
+})
+
+test('Vertical placement of 3 on (5, 5) returns [5, 4], [5, 5], [5, 6]', () => {
+    const positions = getPositions([5, 5], 3, true)
+    expect(positions[0][0]).toBe(5)
+    expect(positions[0][1]).toBe(4)
+    expect(positions[1][0]).toBe(5)
+    expect(positions[1][1]).toBe(5)
     expect(positions[2][0]).toBe(5)
-    expect(positions[2][1]).toBe(7)
+    expect(positions[2][1]).toBe(6)
 })
 
 test('Works with placement on the start of the board', () => {
