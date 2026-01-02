@@ -103,10 +103,8 @@ export default function Computer(name, active, smart = true) {
                 const attack = smart ? findAttack(noted.length) : randomAttack()
                 const status = enemy.receiveAttack(attack)
                 if (status > 1) {
-                    console.log(noted.toSpliced())
                     noted.push(enemy.getAttacked().at(-1))
                     clearNoted(enemy.getShips().filter(ship => ship.destroyed))
-                    console.log(noted.toSpliced())
                 }
                 displayCells()
             }, (delay))
