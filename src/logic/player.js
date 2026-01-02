@@ -1,52 +1,87 @@
 import Gameboard from './gameboard.js'
-import getPositions from './positions.js'
 
-export default function Player(active) {
+function Ship(name, length) {
+    let positions = null
+    let destroyed = false
+    const className = name.split(' ')[0].toLowerCase()
+    return { name, length, positions, destroyed, className }
+}
+
+export default function Player(name, active) {
+    const computer = false
     const board = Gameboard()
-    const ships = [
-        { name: 'Carrier', length: 5 },
-        { name: 'Battleship', length: 4 },
-        { name: 'Destroyer', length: 3 },
-        { name: 'Submarine', length: 3 },
-        { name: 'Patrol', length: 2 }
-    ]
+    const ships = [ Ship('Carrier', 5), Ship('Battleship', 4), Ship('Destroyer', 3), Ship('Submarine', 3), Ship('Patrol Boat', 2) ]
 
     const getShips = () => ships
-    const placeShip = (coordinates, name, vertical) => {
-        const ship = ships.find(item => item.name === name)
-        const others = ships.filter(item => item.name !== name)
-
-        const positions = getPositions(coordinates, ship.length, vertical)
-        for (const other of others) {
-            if (other.hasOwnProperty('positions')) continue
-            for (const [i, j] of other.positions)
+    const placeShip = (positions, name) => ships.find(item => item.name === name).positions = positions
+    const verifyPlacement = (positions, name) => {
+        for (const ship of ships.filter(ship => ship.name !== name)) {
+            if (ship.positions === null) continue
+            for (const [i, j] of ship.positions)
                 for (const [x, y] of positions)
-                    if (x === i && y === j) return
+                    if (x === i && y === j) return false
         }
-        ship.positions = positions
+        return true
+    }
+
+    const findShip = (coordinates) => {
+        const [x, y] = coordinates
+        for (const ship of ships) for (const [i, j] of ship.positions) {
+            if (i === x && j === y) return ship
+        }
     }
 
     const attackedCells = []
-    const receiveAttack = (coordinates) => {
-        if (active.check()) return
-        for (const [x, y] of attackedCells)
-            if (x === coordinates[0] && y === coordinates[1]) return
-
-        active.switch()
-        attackedCells.push(coordinates)
-        if (board.receiveAttack(coordinates))
-            if (board.sunkAt(coordinates)) 
-                if (board.allSunk()) return
+    const getAttacked = () => attackedCells
+    const verifyAttack = (x, y) => {
+        if (x < 0 || x > 9 || y < 0 || y > 9) return false
+        for (const [i, j] of attackedCells)
+            if (x === i && y === j) return false
+        return true
     }
 
-    const initialize = (left = false) => {
+    const receiveAttack = (coordinates) => {
+        if (!verifyAttack(coordinates[0], coordinates[1])) return false
+        if (!active.check()) return false
+
+        active.switch()
+
+        let status = board.receiveAttack(coordinates)
+        const one = board.sunkAt(coordinates)
+        const all = board.allSunk()
+
+        if (status) {
+            if (one) {
+                if (all) status = all
+                else status = one
+            }
+        }
+        if (status > 2) {
+            const ship = findShip(coordinates)
+            ship.destroyed = true
+        }
+        if (status === 4) win()
+        attackedCells.push([...coordinates, status])
+        return status
+    }
+
+    const verify = () => {
         for (const ship of ships)
-            if (!ship.hasOwnProperty('positions'))
-                return
+            if (ship.positions === null)
+                return false
+        return true
+    }
+
+    const initialize = () => {
         for (const ship of ships) {
-            board.placeShip(ship.positions)
+            board.placeShip(ship.positions, ship.name)
         }
     }
 
-    return { getShips, placeShip, receiveAttack, initialize }
+    const win = () => {
+        active.win()
+    }
+
+    const obj = { name, computer, getAttacked, getShips, placeShip, verifyPlacement, receiveAttack, verifyAttack, verify, initialize }
+    return obj
 }

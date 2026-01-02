@@ -24,17 +24,22 @@ export default function Gameboard() {
         const cell = board[y][x]
         if (cell !== null) {
             cell.hit()
-            return true
+            return 2
         }
-        return false
+        return 1
     }
 
     const sunkAt = (coordinates) => {
         const [x, y] = coordinates
-        return board[y][x].isSunk()
+        const cell = board[y][x]
+        if (cell !== null && cell.isSunk()) return 3
+        return false
     }
 
-    const allSunk = () => ships.reduce((bool, ship) => bool = bool ? ship.isSunk() : false, true)
+    const allSunk = () => {
+        if (ships.reduce((bool, ship) => bool = bool ? ship.isSunk() : false, true)) return 4
+        return false
+    }
 
     return { placeShip, receiveAttack, sunkAt, allSunk }
 }

@@ -8,7 +8,7 @@ test('Ships can be sunk', () => {
     board.receiveAttack([0, 0])
     board.receiveAttack([1, 0])
     board.receiveAttack([2, 0])
-    expect(board.sunkAt([0, 0])).toBe(true)
+    expect(board.sunkAt([0, 0])).toBe(3)
 })
 
 test('allSunk returns false when ships are not sunk', () => {
@@ -18,7 +18,7 @@ test('allSunk returns false when ships are not sunk', () => {
     board.receiveAttack([0, 0])
     board.receiveAttack([1, 0])
     board.receiveAttack([2, 0])
-    expect(board.sunkAt([0, 0])).toBe(true)
+    expect(board.sunkAt([0, 0])).toBe(3)
     expect(board.allSunk()).toBe(false)
 })
 
@@ -28,5 +28,5 @@ test('allSunk returns true when ships are sunk', () => {
     board.receiveAttack([0, 0])
     board.receiveAttack([1, 0])
     board.receiveAttack([2, 0])
-    expect(board.allSunk()).toBe(true)
+    expect(board.allSunk()).toBe(4)
 })

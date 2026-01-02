@@ -1,11 +1,213 @@
+@import url('https://fonts.googleapis.com/css2?family=Jockey+One&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+
 :root {
-    font-family: sans-serif;
-    font-size: 16px;
+    color: white;
+    font-family: 'Lato', sans-serif;
+    font-size: 24px;
     line-height: 1.5;
+    --header-fonts: 'Jockey One', sans-serif;
+    --background: hsl(240 100 15);
+    --background-hover: hsl(from var(--background) h s calc(l + 5));
+    --ship-cell: hsl(0 0 80);
 }
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+body {
+    background-color: var(--background);
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    background-color: hsl(from var(--background) h s calc(l - 5));
+    margin-bottom: 100px;
+    border-bottom: 1px solid hsl(0 0 80);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.reset {
+    appearance: none;
+    color: inherit;
+    background-color: inherit;
+    font-size: 1.5rem;
+    font-family: var(--header-fonts);
+    border: none;
+    padding: 20px 40px;
+}
+
+.reset:hover {
+    background-color: var(--background-hover);
+}
+
+h1,
+h2 {
+    font-family: var(--header-fonts);
+    letter-spacing: 1.5px;
+}
+
+main {
+    align-self: center;
+    display: grid;
+    grid-template-columns: 1fr 350px 1fr;
+    gap: 50px;
+    justify-items: center;
+    align-items: start;
+}
+
+input {
+    font-family: inherit;
+    font-size: 20px;
+}
+
+input[type=radio] {
+    display: none;
+}
+
+.form {
+    border: 1px solid white;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 20px;
+}
+
+.create {
+    appearance: none;
+    border: 1px solid white;
+    padding: 20px 40px;
+}
+
+.name {
+    appearance: none;
+    outline: none;
+    color: inherit;
+    background-color: hsl(240 60 10);
+    border: 1px solid white;
+    padding: 2px 10px;
+}
+
+.radio {
+    border: 1px solid white;
+    width: 36px;
+    height: 36px;
+    justify-self: right;
+}
+
+.radio:hover {
+    background-color: hsl(0 0 50);
+}
+
+.radio.selected {
+    background-color: white;
+    box-shadow: 0 0 2px #0005;
+}
+
+.create,
+.start {
+    appearance: none;
+    color: inherit;
+    background-color: inherit;
+    font-family: var(--header-fonts);
+    font-size: inherit;
+    border: 2px solid white;
+    padding: 20px;
+}
+
+.create:hover,
+.start:hover {
+    background-color: var(--background-hover);
+}
+
+.title {
+    grid-column: 1 / 4;
+}
+
+.ships {
+    background-color: hsl(from var(--background) h s calc(l - 5));
+    padding: 5px;
+    padding-top: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+}
+
+.select,
+.rotate {
+    appearance: none;
+    color: inherit;
+    background-color: hsl(from var(--background) h s l);
+    font-family: var(--header-fonts);
+    font-size: 24px;
+    border: none;
+    padding: 10px 0;
+    flex: 1;
+}
+
+.select:hover,
+.rotate:hover {
+    background-color: hsl(from var(--background) h s calc(l + 5))
+}
+
+.select.selected,
+.rotate.selected {
+    background-color: hsl(from var(--background) h s calc(l + 10))
+}
+
+.board {
+    background-color: hsl(from var(--background) h s calc(l - 5));
+    padding: 5px;
+    display: grid;
+    grid-template-columns: repeat(10, 50px);
+    gap: 5px;
+    grid-auto-rows: 50px;
+}
+
+.cell {
+    appearance: none;
+    background-color: hsl(from var(--background) h s calc(l + 5));
+    border: none;
+}
+
+.cell:hover {
+    background-color: var(--background);
+}
+
+.cell.hovered {
+    background-color: hsl(from var(--ship-cell) h s calc(l - 10));
+}
+
+.cell.ship {
+    background-color: var(--ship-cell);
+}
+
+.cell.ship:hover {
+    background-color: hsl(from var(--ship-cell) h s calc(l - 10));
+}
+
+.cell.ship.hovered {
+    background-color: hsl(from var(--ship-cell) h s calc(l - 10));
+}
+
+.cell.miss {
+    border: 2px solid hsl(240 80 80);
+}
+
+.cell.hit {
+    border: 2px solid hsl(0 80 80);
+}
+
+.cell.ship.hit {
+    border-color: hsl(0 80 40);
+}
+
+.cell.hit.destroyed {
+    background-color: hsl(35 100 50);
+    border: none;
 }
