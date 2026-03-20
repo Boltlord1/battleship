@@ -10,6 +10,7 @@ export default function Computer(name, active, smart = true) {
     const noted = []
 
     function findAttack() {
+        console.log(Math.random())
         const length = noted.length
         if (mode === 2 && length > 1 && inLine(noted[length - 1], noted[length - 2])) {
             mode = 3
@@ -21,6 +22,10 @@ export default function Computer(name, active, smart = true) {
             mode = 1
         }
         while (mode === 3) {
+            if (length < 2) {
+                mode = 2
+                return findAttack()
+            }
             const coordinates = findLine(noted[length - 1], noted[length - 2][0])
             if (coordinates !== false) return coordinates
             noted.pop()
@@ -107,7 +112,7 @@ export default function Computer(name, active, smart = true) {
                     clearNoted(enemy.getShips().filter(ship => ship.destroyed))
                 }
                 displayCells()
-            }, (delay))
+            }, (1))
             return prev
         }
 
